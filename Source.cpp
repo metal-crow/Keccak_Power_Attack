@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
+#include <cstring>
 
 #include "Keccak_Ops.h"
 
@@ -77,12 +78,22 @@ int main() {
 	//Run through Keccak Theta operation
 	Theta_Second_XOR_Operation(key);
 
+	uint64_t keccak_state[25];
+	uint64_t key_guess[5];
+
+	//for every message (Todo Parallelize)
 	while (true) {
-		for (int key_byte_guess = 0; key_byte_guess < 256; key_byte_guess++) {
-			//expand the byte guess to a full key
-		}
 		uint64_t* msg = ReadMessage(input);
 
+		for (int key_byte_guess = 0; key_byte_guess < 256; key_byte_guess++) {
+			//expand the byte guess to a full key
+			memset(key_guess, key_byte_guess, 5 * 8);
+
+			//Run Keccak Theta op with the key byte guess and message
+			sha3_permutation_Theta_with_Key(keccak_state, msg, key_guess);
+		}
+
+		delete msg;
 	}
 
 	return 0;
