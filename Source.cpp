@@ -91,6 +91,23 @@ int main() {
 
 			//Run Keccak Theta op with the key byte guess and message
 			sha3_permutation_Theta_with_Key(keccak_state, msg, key_guess);
+
+			//Parse the 200 byte result from Theta out
+			uint8_t hamming_weight_results[40] = { 0 };
+
+			//go through each 40 byte plane
+			for (int plane = 1; plane < 5; plane++) {
+				//since we storing the state in chunks of 64 bits
+				for (int y = 0; y < 5; y++) {
+					//have to traverse each 64 bit chunk byte by byte
+					for (int z = 0; z < 8; z++) {
+						uint8_t val = ((uint8_t*)keccak_state)[plane*40 + y*8 + z];
+						hamming_weight_results[y * 8 + z] += HammingWeightValues[val];
+					}
+				}
+			}
+
+
 		}
 
 		delete msg;
